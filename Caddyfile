@@ -1,0 +1,39 @@
+{
+    frankenphp {
+    num_threads 32
+    worker {
+      file /app/public/index.php
+      watch /app/**/*.php
+    }
+  }
+}
+
+localhost {
+  root * /app/public/
+  encode zstd br gzip
+  route {
+    # Add trailing slash for directory requests
+    @canonicalPath {
+      file {path}/index.php
+      not path */
+    }
+    redir @canonicalPath {path}/ 308
+
+    # If the requested file does not exist, try index files
+    @indexFiles {
+      file {
+        # try_files {path} {path}/index.php index.php
+        try_files {path} {path}/ /index.php?{query}
+        split_path .php
+      }
+    }
+    rewrite @indexFiles {http.matchers.file.relative}
+    
+    # FrankenPHP!
+    @phpFiles path *.php
+    php @phpFiles
+
+    # Serve static files
+    file_server
+  }
+}
