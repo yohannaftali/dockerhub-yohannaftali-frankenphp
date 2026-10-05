@@ -1,9 +1,14 @@
 ARG PHP_VERSION=8.3
-ARG FRANKEN_PHP_VERSION=latest-builder
+ARG FRANKEN_PHP_VERSION=builder
 ARG OS=bookworm
 ARG USER=www-data
 
 FROM dunglas/frankenphp:${FRANKEN_PHP_VERSION}-php${PHP_VERSION}-${OS}
+
+LABEL org.opencontainers.image.title="frankenphp" \
+      org.opencontainers.image.description="FrankenPHP (PHP 8.3, Debian bookworm) with common extensions, Composer 2.2 and sendmail" \
+      org.opencontainers.image.authors="Yohan Naftali" \
+      org.opencontainers.image.source="https://github.com/yohannaftali/dockerhub-yohannaftali-frankenphp"
 
 WORKDIR /app
 
@@ -35,8 +40,8 @@ RUN apt-get update && apt-get install -y \
   libpng-dev \
   libpq-dev \
   libwebp-dev \
-  libxml2-dev \ 
-  libzip-dev \    
+  libxml2-dev \
+  libzip-dev \
   nano \
   optipng \
   pngquant \
@@ -55,7 +60,7 @@ RUN install-php-extensions \
   mysqli \
   opcache \
   pcntl \
-  pdo \ 
+  pdo \
   pdo_mysql \
   soap \
   zip
